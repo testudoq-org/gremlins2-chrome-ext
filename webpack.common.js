@@ -10,20 +10,23 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
+    publicPath: ''  // Ensure all assets are relative to the root
   },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/manifest.json', to: 'manifest.json' },
         { from: 'src/icons', to: 'icons' },
-        { from: 'src/content/gremlins.min.js', to: 'gremlins.min.js' } // Copy gremlins.min.js to root
+        { from: 'node_modules/gremlins.js/dist/gremlins.min.js', to: 'gremlins.min.js' },
+        { from: 'src/popup/popup.css', to: 'popup.css' } // Add this line
       ]
     }),
     new HtmlWebpackPlugin({
       template: './src/popup/popup.html',
       filename: 'popup.html',
-      chunks: ['popup']
+      chunks: ['popup'],
+      inject: 'body' // Ensure scripts are injected at the end of the body
     })
   ],
   module: {
@@ -43,5 +46,10 @@ module.exports = {
         }
       }
     ]
+  },
+  resolve: {
+    alias: {
+      'gremlins.js': path.resolve(__dirname, 'node_modules/gremlins.js/dist/gremlins.min.js')
+    }
   }
 };
