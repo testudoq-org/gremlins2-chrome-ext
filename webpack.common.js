@@ -17,8 +17,7 @@ module.exports = {
       patterns: [
         { from: 'src/manifest.json', to: 'manifest.json' },
         { from: 'src/icons', to: 'icons' },
-        // Copy gremlins.min.js from node_modules to the dist folder
-        { from: 'node_modules/gremlins.js/dist/gremlins.min.js', to: 'gremlins.min.js' }
+        { from: 'src/content/gremlins.min.js', to: 'gremlins.min.js' } // Copy gremlins.min.js to root
       ]
     }),
     new HtmlWebpackPlugin({
