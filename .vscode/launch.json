@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Launch Chrome Extension Pack",
+        "type": "chrome",
+        "request": "launch",
+        "url": "https://testudo.co.nz/sbt/simple-input.html",
+        "webRoot": "${workspaceFolder}",
+        "sourceMapPathOverrides": {
+          "webpack:///src/background/*": "${webRoot}/src/background/*",
+          "webpack:///src/content/*": "${webRoot}/src/content/*",
+          "webpack:///src/popup/*": "${webRoot}/src/popup/*",
+          "webpack:///src/gremlins/*": "${webRoot}/src/gremlins/*"
+        },
+        "sourceMaps": true,
+        "trace": true,
+        "timeout": 30000,
+        "runtimeArgs": [
+          "--disable-extensions-except=${workspaceFolder}/dist",
+          "--load-extension=${workspaceFolder}/dist",
+          "--user-data-dir=${env:CHROME_PROFILE_PATH}"
+        ],
+        "outFiles": [
+          "${workspaceFolder}/dist/**/*.js"
+        ],
+        "userDataDir": false,
+        "skipFiles": [
+          "${workspaceFolder}/node_modules/**",
+          "${workspaceFolder}/**/*.min.js"
+        ]
+      }
+    ]
+  }
+  
