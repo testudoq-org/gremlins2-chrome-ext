@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Gremlins.js Chrome Extension",
+  "name": "Futterman: A Gremlins.js Chrome Extension",
   "version": "1.0",
   "description": "A Chrome extension to use Gremlins.js for testing web applications.",
   "permissions": [
