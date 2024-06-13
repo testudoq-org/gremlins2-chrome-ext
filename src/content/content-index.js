@@ -1,19 +1,72 @@
-//content-index.js (content.js)
 import './gremlins.min.js'; // Adjust the path if necessary
 
 console.log('Gremlins.min.js loaded');
 
-// Function to unleash Gremlins.js horde
-function startGremlins() {
+let horde = null;
+
+// Function to start Gremlins.js horde with a specified attack duration
+function startGremlins(attackDuration) {
   console.log('Starting Gremlins.js horde on webpage');
-  gremlins.createHorde().unleash();
+
+  const milliseconds = attackDuration * 1000;
+
+  let strategies = [];
+  if (attackDuration !== '0') {
+    if (gremlins.strategies.timeLimit) {
+      strategies.push(gremlins.strategies.timeLimit({ milliseconds: milliseconds }));
+    } else {
+      console.warn('timeLimit strategy is not available. Using default strategies.');
+      strategies.push(gremlins.strategies.distribution({ delay: 100 }));
+    }
+  }
+
+  horde = gremlins.createHorde({ strategies });
+  horde.unleash();
+
   console.log('Gremlins.js horde started');
+}
+
+// Function to stop Gremlins.js horde
+function stopGremlins() {
+  if (horde) {
+    horde.stop();
+    horde = null;
+    console.log('Gremlins.js horde stopped');
+  }
+}
+
+// Function to configure specific attacks
+function configureAttack(attackType) {
+  if (horde) {
+    horde.stop();
+  }
+
+  switch (attackType) {
+    case 'clicker':
+      horde = gremlins.createHorde({ species: [gremlins.species.clicker()] });
+      break;
+    case 'formFiller':
+      horde = gremlins.createHorde({ species: [gremlins.species.formFiller()] });
+      break;
+    case 'scroller':
+      horde = gremlins.createHorde({ species: [gremlins.species.scroller()] });
+      break;
+    default:
+      console.error('Unknown attack type:', attackType);
+      return;
+  }
+  horde.unleash();
+  console.log(`Gremlins.js ${attackType} attack configured and started`);
 }
 
 // Listen for messages from popup.js
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.command === 'startGremlins') {
-    startGremlins();
+    startGremlins(message.attackDuration);
+  } else if (message.command === 'stopGremlins') {
+    stopGremlins();
+  } else if (message.command === 'configureAttack') {
+    configureAttack(message.attackType);
   }
 });
 
@@ -31,9 +84,18 @@ function createContextMenu(x, y) {
       title: 'Start Gremlins',
       contexts: ['all'],
       onclick: function () {
-        startGremlins();
+        startGremlins(15); // Default duration of 15 seconds
       },
     },
+    {
+      id: 'stopGremlins',
+      title: 'Stop Gremlins',
+      contexts: ['all'],
+      onclick: function () {
+        stopGremlins();
+      },
+    },
+    // Additional context menu items can be added here if needed
   ];
 
   // Ensure chrome.contextMenus is defined before attempting to use it
