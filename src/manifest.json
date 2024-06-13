@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Futterman: A Gremlins.js Chrome Extension",
+  "version": "1.0",
+  "description": "A Chrome extension to use Gremlins.js for testing web applications.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.bundle.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/gremlin-16.png",
+      "48": "icons/gremlin-48.png",
+      "128": "icons/gremlin-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/gremlin-16.png",
+    "48": "icons/gremlin-48.png",
+    "128": "icons/gremlin-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["gremlins.min.js", "content.bundle.js"]
+    }
+  ]
+}
