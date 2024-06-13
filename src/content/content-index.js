@@ -1,4 +1,4 @@
-//context-index.js
+// context.js
 import './gremlins.min.js'; // Adjust the path if necessary
 
 console.log('Gremlins.min.js loaded');
@@ -31,6 +31,7 @@ function startGremlins(attackDuration) {
 
   attackTimeout = setTimeout(() => {
     stopGremlins();
+    chrome.runtime.sendMessage({ command: 'updateToggleButtonText', attacking: false });
   }, milliseconds);
 
   console.log('Gremlins.js horde started');

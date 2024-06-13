@@ -1,22 +1,30 @@
-//popup.js
+// popup.js
 let attacking = false;
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Ensure the attack duration field is populated with the default value
+  const attackDurationElement = document.getElementById('attackDuration');
+  if (attackDurationElement) {
+    attackDurationElement.value = '15'; // Default attack duration
+  } else {
+    console.error('Attack duration element not found.');
+  }
+
+  // Add event listener to the toggle button
   const toggleButton = document.getElementById('toggleGremlins');
-  if (!toggleButton) {
-    console.error('Toggle button not found');
-    return;
+  if (toggleButton) {
+    toggleButton.addEventListener('click', toggleGremlins);
+  } else {
+    console.error('Toggle button not found.');
   }
 
-  toggleButton.addEventListener('click', toggleGremlins);
-
+  // Add event listener to the configure attack button
   const configureAttackButton = document.getElementById('configureAttack');
-  if (!configureAttackButton) {
-    console.error('Configure attack button not found');
-    return;
+  if (configureAttackButton) {
+    configureAttackButton.addEventListener('click', configureAttack);
+  } else {
+    console.error('Configure attack button not found.');
   }
-
-  configureAttackButton.addEventListener('click', configureAttack);
 });
 
 function toggleGremlins() {
@@ -30,7 +38,13 @@ function toggleGremlins() {
 }
 
 function configureAttack() {
-  const attackType = document.getElementById('attackType').value;
+  const attackTypeElement = document.getElementById('attackType');
+  if (!attackTypeElement) {
+    console.error('Attack type element not found.');
+    return;
+  }
+
+  const attackType = attackTypeElement.value;
 
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     if (tabs.length === 0) {
@@ -73,7 +87,6 @@ function stopGremlins() {
 
   attacking = false;
   updateToggleButtonText();
-  chrome.runtime.reload();
 }
 
 function updateToggleButtonText() {
