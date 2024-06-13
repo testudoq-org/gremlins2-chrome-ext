@@ -1,4 +1,4 @@
-// background-indexed.js
+// background-index.js
 
 chrome.runtime.onInstalled.addListener(() => {
   // Create the context menu items
@@ -23,38 +23,43 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Listen for context menu item clicks
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === 'launch-gremlins') {
-    // Inject the gremlins script
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ['context.js']
-    });
-  } else if (info.menuItemId === 'open-popup') {
-    // Open the popup.html in a new tab
-    chrome.tabs.create({
-      url: chrome.runtime.getURL('popup.html')
-    });
-  } else if (info.menuItemId === 'stop-gremlins') {
-    // Send a message to trigger stopGremlins
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs.length === 0) {
-        console.error('No active tabs found');
-        return;
-      }
-      const tab = tabs[0];
-      chrome.tabs.sendMessage(tab.id, { command: 'stopGremlins' });
-    });
+  switch (info.menuItemId) {
+    case 'launch-gremlins':
+      // Inject the gremlins script
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['context.bundle.js']
+      });
+      break;
+
+    case 'open-popup':
+      // Open the popup.html in a new tab
+      chrome.tabs.create({
+        url: chrome.runtime.getURL('popup.html')
+      });
+      break;
+
+    case 'stop-gremlins':
+      // Send a message to trigger stopGremlins
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length === 0) {
+          console.error('No active tabs found');
+          return;
+        }
+        const tab = tabs[0];
+        chrome.tabs.sendMessage(tab.id, { command: 'stopGremlins' });
+      });
+      break;
+
+    default:
+      console.error('Unknown menu item clicked:', info.menuItemId);
   }
 });
 
 // Listen for messages from content scripts
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (
-    message.command === 'startGremlins' ||
-    message.command === 'stopGremlins' ||
-    message.command === 'configureAttack'
-  ) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (['startGremlins', 'stopGremlins', 'configureAttack'].includes(message.command)) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length === 0) {
         console.error('No active tabs found');
         return;
@@ -64,7 +69,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       // Inject the content script and then send the message
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        files: ['context.js'],
+        files: ['context.bundle.js'],
         runAt: 'document_start'
       }, () => {
         chrome.tabs.sendMessage(tab.id, message);
@@ -72,6 +77,3 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     });
   }
 });
-
-// Export the functions for testing purposes
-export { onInstalled, onClicked, onMessage };

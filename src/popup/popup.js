@@ -1,8 +1,7 @@
 // popup.js
 let attacking = false;
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Ensure the attack duration field is populated with the default value
+document.addEventListener('DOMContentLoaded', function () {
   const attackDurationElement = document.getElementById('attackDuration');
   if (attackDurationElement) {
     attackDurationElement.value = '15'; // Default attack duration
@@ -10,93 +9,101 @@ document.addEventListener('DOMContentLoaded', function() {
     console.error('Attack duration element not found.');
   }
 
-  // Add event listener to the toggle button
-  const toggleButton = document.getElementById('toggleGremlins');
-  if (toggleButton) {
-    toggleButton.addEventListener('click', toggleGremlins);
+  const gremlinsButton = document.getElementById('gremlinsButton');
+  if (gremlinsButton) {
+    gremlinsButton.addEventListener('click', toggleGremlins);
   } else {
-    console.error('Toggle button not found.');
+    console.error('Gremlins button not found.');
   }
 
-  // Add event listener to the configure attack button
-  const configureAttackButton = document.getElementById('configureAttack');
-  if (configureAttackButton) {
-    configureAttackButton.addEventListener('click', configureAttack);
+  const gremlinForm = document.getElementById('gremlin-form');
+  if (gremlinForm) {
+    gremlinForm.addEventListener('submit', launchGremlins);
   } else {
-    console.error('Configure attack button not found.');
+    console.error('Gremlin form not found.');
   }
 });
 
 function toggleGremlins() {
-  attacking = !attacking;
   if (attacking) {
-    startGremlins();
-  } else {
     stopGremlins();
+  } else {
+    launchGremlins();
   }
-  updateToggleButtonText();
 }
 
-function configureAttack() {
-  const attackTypeElement = document.getElementById('attackType');
-  if (!attackTypeElement) {
-    console.error('Attack type element not found.');
-    return;
-  }
+function launchGremlins() {
+  const species = Array.from(document.querySelectorAll('input[name="species"]:checked')).map(input => input.value);
+  const strategies = Array.from(document.querySelectorAll('input[name="strategy"]:checked')).map(input => input.value);
 
-  const attackType = attackTypeElement.value;
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    if (tabs.length === 0) {
-      console.error('No active tabs found');
-      return;
-    }
-    const tab = tabs[0];
-    chrome.tabs.sendMessage(tab.id, { command: 'configureAttack', attackType: attackType });
-  });
-}
-
-function startGremlins() {
   const attackDurationElement = document.getElementById('attackDuration');
-  if (!attackDurationElement) {
-    console.error('Attack duration element not found');
-    return;
-  }
+  const attackDuration = attackDurationElement ? attackDurationElement.value : 15;
 
-  const attackDuration = attackDurationElement.value;
-
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs.length === 0) {
       console.error('No active tabs found');
       return;
     }
     const tab = tabs[0];
-    chrome.tabs.sendMessage(tab.id, { command: 'startGremlins', attackDuration: attackDuration });
+
+    // Inject the content script
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['content.bundle.js']
+    }, () => {
+      // Check if the script was injected successfully
+      if (chrome.runtime.lastError) {
+        console.error('Script injection failed: ', chrome.runtime.lastError.message);
+        return;
+      }
+
+      // Send the message to start Gremlins after script injection
+      chrome.tabs.sendMessage(tab.id, {
+        command: 'startGremlins',
+        attackDuration: attackDuration,
+        species: species,
+        strategies: strategies
+      }, function (response) {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError.message);
+        } else {
+          console.log('Gremlins started:', response);
+          attacking = true;
+          updateButtonText();
+        }
+      });
+    });
   });
 }
 
 function stopGremlins() {
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs.length === 0) {
       console.error('No active tabs found');
       return;
     }
     const tab = tabs[0];
-    chrome.tabs.sendMessage(tab.id, { command: 'stopGremlins' });
-  });
 
-  attacking = false;
-  updateToggleButtonText();
+    chrome.tabs.sendMessage(tab.id, { command: 'stopGremlins' }, function (response) {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message);
+      } else {
+        console.log('Gremlins stopped:', response);
+        attacking = false;
+        updateButtonText();
+      }
+    });
+  });
 }
 
-function updateToggleButtonText() {
-  const toggleButton = document.getElementById('toggleGremlins');
-  if (toggleButton) {
-    toggleButton.textContent = attacking ? 'Stop Gremlins' : 'Start Gremlins';
+function updateButtonText() {
+  const gremlinsButton = document.getElementById('gremlinsButton');
+  if (gremlinsButton) {
+    gremlinsButton.textContent = attacking ? 'Stop Gremlins' : 'Start Gremlins';
   } else {
-    console.error('Toggle button not found.');
+    console.error('Gremlins button not found.');
   }
 }
 
 // Export functions for testing or use in other modules
-export { toggleGremlins, configureAttack, startGremlins, stopGremlins, updateToggleButtonText };
+export { toggleGremlins, launchGremlins, stopGremlins, updateButtonText };
