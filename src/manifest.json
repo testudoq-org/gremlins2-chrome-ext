@@ -6,7 +6,8 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "contextMenus"
+    "contextMenus",
+    "tabs"
   ],
   "background": {
     "service_worker": "background.bundle.js"

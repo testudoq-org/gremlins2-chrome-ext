@@ -1,14 +1,20 @@
+//context-index.js
 import './gremlins.min.js'; // Adjust the path if necessary
 
 console.log('Gremlins.min.js loaded');
 
 let horde = null;
+let attackTimeout = null;
 
 // Function to start Gremlins.js horde with a specified attack duration
 function startGremlins(attackDuration) {
   console.log('Starting Gremlins.js horde on webpage');
 
   const milliseconds = attackDuration * 1000;
+
+  if (attackTimeout) {
+    clearTimeout(attackTimeout);
+  }
 
   let strategies = [];
   if (attackDuration !== '0') {
@@ -23,6 +29,10 @@ function startGremlins(attackDuration) {
   horde = gremlins.createHorde({ strategies });
   horde.unleash();
 
+  attackTimeout = setTimeout(() => {
+    stopGremlins();
+  }, milliseconds);
+
   console.log('Gremlins.js horde started');
 }
 
@@ -33,6 +43,13 @@ function stopGremlins() {
     horde = null;
     console.log('Gremlins.js horde stopped');
   }
+
+  if (attackTimeout) {
+    clearTimeout(attackTimeout);
+    attackTimeout = null;
+  }
+
+  chrome.runtime.reload(); // Reload the extension
 }
 
 // Function to configure specific attacks
@@ -59,7 +76,7 @@ function configureAttack(attackType) {
   console.log(`Gremlins.js ${attackType} attack configured and started`);
 }
 
-// Listen for messages from popup.js
+// Listen for messages from popup.js or background.js
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.command === 'startGremlins') {
     startGremlins(message.attackDuration);

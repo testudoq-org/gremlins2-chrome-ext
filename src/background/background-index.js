@@ -28,3 +28,16 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     });
   }
 });
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.command === 'startGremlins' || message.command === 'stopGremlins' || message.command === 'configureAttack') {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      if (tabs.length === 0) {
+        console.error('No active tabs found');
+        return;
+      }
+      const tab = tabs[0];
+      chrome.tabs.sendMessage(tab.id, message);
+    });
+  }
+});

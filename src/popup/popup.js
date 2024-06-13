@@ -1,3 +1,4 @@
+//popup.js
 let attacking = false;
 
 document.addEventListener('DOMContentLoaded', function() {
