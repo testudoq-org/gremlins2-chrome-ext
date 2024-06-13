@@ -72,3 +72,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     });
   }
 });
+
+// Export the functions for testing purposes
+export { onInstalled, onClicked, onMessage };

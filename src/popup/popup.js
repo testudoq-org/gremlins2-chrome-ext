@@ -97,3 +97,6 @@ function updateToggleButtonText() {
     console.error('Toggle button not found.');
   }
 }
+
+// Export functions for testing or use in other modules
+export { toggleGremlins, configureAttack, startGremlins, stopGremlins, updateToggleButtonText };
