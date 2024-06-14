@@ -1,3 +1,4 @@
+//webpack.common.js
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -11,7 +12,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
-    publicPath: ''  // Ensure all assets are relative to the root
+    publicPath: ''
   },
   plugins: [
     new CopyWebpackPlugin({
@@ -19,15 +20,17 @@ module.exports = {
         { from: 'src/manifest.json', to: 'manifest.json' },
         { from: 'src/icons', to: 'icons' },
         { from: 'node_modules/gremlins.js/dist/gremlins.min.js', to: 'gremlins.min.js' },
-        { from: 'src/popup/popup.css', to: 'popup.css' } // Add this line
+        { from: 'src/popup/popup.css', to: 'popup.css' }
+        // Add any other static assets that need to be copied to the output directory
       ]
     }),
     new HtmlWebpackPlugin({
       template: './src/popup/popup.html',
       filename: 'popup.html',
       chunks: ['popup'],
-      inject: 'body' // Ensure scripts are injected at the end of the body
+      inject: 'body'
     })
+    // Add more HtmlWebpackPlugin instances for other HTML files if needed
   ],
   module: {
     rules: [
