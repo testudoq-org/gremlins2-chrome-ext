@@ -132,3 +132,8 @@ dist
 # chrome extension dist
 dist
 prod-dist-v1.zip
+prod-dist
+prod-dist/background.bundle.js
+prod-dist/content.bundle.js
+prod-dist/popup.bundle.js
+prod-dist/popup.html
