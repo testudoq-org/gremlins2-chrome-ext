@@ -1,5 +1,4 @@
-// context-index.js
-import './gremlins.min.js'; // Adjust the path if necessary
+// context-index.jsimport './gremlins.min.js'; // Adjust the path if necessary
 
 console.log('Gremlins.min.js loaded');
 
@@ -16,14 +15,12 @@ function startGremlins(attackDuration) {
     clearTimeout(attackTimeout);
   }
 
-  let strategies = [];
-  if (attackDuration !== '0') {
-    if (gremlins.strategies.timeLimit) {
-      strategies.push(gremlins.strategies.timeLimit({ milliseconds }));
-    } else {
-      console.warn('timeLimit strategy is not available. Using default strategies.');
-      strategies.push(gremlins.strategies.distribution({ delay: 100 }));
-    }
+  const strategies = [];
+  if (gremlins.strategies.timeLimit) {
+    strategies.push(gremlins.strategies.timeLimit({ milliseconds }));
+  } else {
+    console.warn('timeLimit strategy is not available. Using default strategies.');
+    strategies.push(gremlins.strategies.distribution({ delay: 100 }));
   }
 
   horde = gremlins.createHorde({ strategies });

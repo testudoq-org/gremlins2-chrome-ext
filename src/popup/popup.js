@@ -15,13 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
   } else {
     console.error('Gremlins button not found.');
   }
-
-  const gremlinForm = document.getElementById('gremlin-form');
-  if (gremlinForm) {
-    gremlinForm.addEventListener('submit', launchGremlins);
-  } else {
-    console.error('Gremlin form not found.');
-  }
 });
 
 function toggleGremlins() {
@@ -33,8 +26,8 @@ function toggleGremlins() {
 }
 
 function launchGremlins() {
-  const species = Array.from(document.querySelectorAll('input[name="species"]:checked')).map(input => input.value);
-  const strategies = Array.from(document.querySelectorAll('input[name="strategy"]:checked')).map(input => input.value);
+  const species = Array.from(document.querySelectorAll('input[name="species"]:checked')).map(input => input.id);
+  const strategies = Array.from(document.querySelectorAll('input[name="strategy"]:checked')).map(input => input.id);
 
   const attackDurationElement = document.getElementById('attackDuration');
   const attackDuration = attackDurationElement ? attackDurationElement.value : 15;
