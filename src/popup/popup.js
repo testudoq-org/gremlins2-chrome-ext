@@ -2,6 +2,9 @@
 let attacking = false;
 
 document.addEventListener('DOMContentLoaded', function () {
+  // Reload the underlying tab
+  reloadActiveTab();
+
   const attackDurationElement = document.getElementById('attackDuration');
   if (attackDurationElement) {
     attackDurationElement.value = '15'; // Default attack duration
@@ -17,6 +20,16 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+function reloadActiveTab() {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    if (tabs.length > 0) {
+      chrome.tabs.reload(tabs[0].id);
+    } else {
+      console.error('No active tabs found.');
+    }
+  });
+}
+
 function toggleGremlins() {
   if (attacking) {
     stopGremlins();
@@ -26,11 +39,8 @@ function toggleGremlins() {
 }
 
 function launchGremlins() {
-  const species = Array.from(document.querySelectorAll('input[name="species"]:checked')).map(input => input.id);
-  const strategies = Array.from(document.querySelectorAll('input[name="strategy"]:checked')).map(input => input.id);
-
   const attackDurationElement = document.getElementById('attackDuration');
-  const attackDuration = attackDurationElement ? attackDurationElement.value : 15;
+  const attackDuration = attackDurationElement ? parseInt(attackDurationElement.value, 10) : 15;
 
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs.length === 0) {
@@ -53,9 +63,7 @@ function launchGremlins() {
       // Send the message to start Gremlins after script injection
       chrome.tabs.sendMessage(tab.id, {
         command: 'startGremlins',
-        attackDuration: attackDuration,
-        species: species,
-        strategies: strategies
+        attackDuration: attackDuration
       }, function (response) {
         if (chrome.runtime.lastError) {
           console.error(chrome.runtime.lastError.message);
