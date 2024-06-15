@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Futterman: Gremlins.js Extension</title>
   <link rel="stylesheet" href="popup.css">
-  <script src="gremlins.min.js"></script>
   <script src="popup.bundle.js"></script>
 </head>
 <body>
@@ -14,8 +13,14 @@
   <label for="attackDuration">Attack Duration (seconds):</label>
   <input type="number" id="attackDuration" value="15" min="0">
   <button id="gremlinsButton">Start Gremlins</button>
+  
+  <br><br>
+  
+  <button id="exportLogsButton">Export Logs</button>
 
   <br><br>
+
+  <div> If you get a rogue gremlin reload the page!</div>
 
   <form id="gremlin-form">
     <div>
