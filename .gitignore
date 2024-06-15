@@ -137,3 +137,6 @@ prod-dist/background.bundle.js
 prod-dist/content.bundle.js
 prod-dist/popup.bundle.js
 prod-dist/popup.html
+test/background-index.spec.js
+prod-dist/content.bundle.js
+prod-dist/background.bundle.js
