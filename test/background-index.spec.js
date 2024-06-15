@@ -53,7 +53,7 @@ describe('background-index', () => {
     handleContextMenuClick({ menuItemId: 'launch-gremlins' }, tab);
     expect(executeScriptMock).toHaveBeenCalledWith({
       target: { tabId: tab.id },
-      files: ['context.bundle.js']
+      files: ['content.bundle.js']
     });
 
     handleContextMenuClick({ menuItemId: 'open-popup' });
@@ -84,7 +84,7 @@ describe('background-index', () => {
     expect(executeScriptMock).toHaveBeenCalledWith(
       {
         target: { tabId: tab.id },
-        files: ['context.bundle.js'],
+        files: ['content.bundle.js'],
         runAt: 'document_start'
       },
       expect.any(Function)
@@ -95,7 +95,7 @@ describe('background-index', () => {
     expect(executeScriptMock).toHaveBeenCalledWith(
       {
         target: { tabId: tab.id },
-        files: ['context.bundle.js'],
+        files: ['content.bundle.js'],
         runAt: 'document_start'
       },
       expect.any(Function)
@@ -106,7 +106,7 @@ describe('background-index', () => {
     expect(executeScriptMock).toHaveBeenCalledWith(
       {
         target: { tabId: tab.id },
-        files: ['context.bundle.js'],
+        files: ['content.bundle.js'],
         runAt: 'document_start'
       },
       expect.any(Function)
