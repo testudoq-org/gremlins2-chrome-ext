@@ -1,16 +1,10 @@
-// background-index.js
+// background-index.js (background.js)
 
 chrome.runtime.onInstalled.addListener(() => {
   // Create the context menu items
   chrome.contextMenus.create({
     id: 'launch-gremlins',
     title: 'Launch Full Gremlin Horde',
-    contexts: ['all']
-  });
-
-  chrome.contextMenus.create({
-    id: 'open-popup',
-    title: 'Configure Gremlins',
     contexts: ['all']
   });
 
@@ -30,9 +24,13 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       break;
 
     case 'open-popup':
-      chrome.tabs.create({
-        url: chrome.runtime.getURL('popup.html')
-      });
+      chrome.windows.create({
+        url: chrome.runtime.getURL('popup.html'),
+        type: 'popup',
+        width: 181.6, 
+        height: 686.8, 
+        focused: true
+    });
       break;
 
     case 'stop-gremlins':
@@ -41,5 +39,18 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
     default:
       console.error('Unknown menu item clicked:', info.menuItemId);
+  }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.command === 'reloadExtension') {
+    chrome.runtime.reload();
+  }
+  if (message.command === 'updateToggleButtonText') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length > 0) {
+        chrome.tabs.sendMessage(tabs[0].id, message);
+      }
+    });
   }
 });

@@ -1,4 +1,4 @@
-// context-index.js
+// context-index.js (content.bundle.js)
 import './gremlins.min.js'; // Adjust the path if necessary
 
 console.log('Gremlins.min.js loaded');
@@ -48,7 +48,9 @@ function stopGremlins() {
     attackTimeout = null;
   }
 
-  chrome.runtime.reload(); // Reload the extension
+  chrome.runtime.sendMessage({ command: 'updateToggleButtonText', attacking: false });
+  chrome.runtime.sendMessage({ command: 'reloadExtension' });
+
 }
 
 // Listen for messages from background or popup scripts

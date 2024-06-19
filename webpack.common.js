@@ -20,7 +20,7 @@ module.exports = {
         { from: 'src/manifest.json', to: 'manifest.json' },
         { from: 'src/icons', to: 'icons' },
         { from: 'node_modules/gremlins.js/dist/gremlins.min.js', to: 'gremlins.min.js' },
-        { from: 'src/popup/popup.css', to: 'popup.css' }
+        { from: 'src/popup/popup.css', to: 'popup.css' },
         // Add any other static assets that need to be copied to the output directory
       ]
     }),

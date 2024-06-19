@@ -11,6 +11,7 @@ const logMessages = []; // Array to store log messages
   };
 });
 
+
 document.addEventListener('DOMContentLoaded', function () {
   // Reload the underlying tab
   reloadActiveTab();
@@ -39,6 +40,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Update the button text on load
   updateButtonText();
+
+    // Add event listener for message from context script
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.command === 'updateToggleButtonText') {
+        attacking = message.attacking;
+        updateButtonText();
+      }
+    });
+
 });
 
 function reloadActiveTab() {
@@ -98,6 +108,7 @@ function launchGremlins() {
   });
 }
 
+
 function stopGremlins() {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs.length === 0) {
@@ -118,6 +129,7 @@ function stopGremlins() {
   });
 }
 
+
 function updateButtonText() {
   const gremlinsButton = document.getElementById('gremlinsButton');
   if (gremlinsButton) {
@@ -126,6 +138,14 @@ function updateButtonText() {
     console.error('Gremlins button not found.');
   }
 }
+
+// Add event listener for message from context script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.command === 'updateToggleButtonText') {
+    attacking = message.attacking;
+    updateButtonText();
+  }
+});
 
 // Function to export logs
 function exportLogs() {

@@ -1,3 +1,4 @@
+//webpack.prod.js
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -16,6 +17,7 @@ module.exports = merge(common, {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
+          sourceMap: false, // Set sourceMap to false to disable source map generation
           format: {
             comments: false, // Remove comments
           },
