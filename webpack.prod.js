@@ -30,19 +30,5 @@ module.exports = merge(common, {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new ObfuscatorPlugin({
-      compact: true,
-      controlFlowFlattening: false,
-      deadCodeInjection: false,
-      debugProtection: false,
-      identifierNamesGenerator: 'hexadecimal',
-      keepClassNamePrefix: true,
-      rotateStringArray: true,
-      selfDefending: true,
-      splitStrings: true,
-      stringArray: true,
-      stringArrayEncoding: ['base64'],
-      stringArrayThreshold: 0.75,
-    })
   ]
 });

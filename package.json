@@ -31,5 +31,8 @@
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^5.10.0",
     "webpack-obfuscator": "^3.5.1"
+  },
+  "dependencies": {
+    "gremlins2-chrome-ext": "file:"
   }
 }
